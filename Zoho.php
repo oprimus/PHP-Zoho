@@ -78,7 +78,7 @@ abstract class Zoho {
 
         $params = $this->fixedParams+array('scope' => $this->scope, 'authtoken' => $this->authToken)+$params;
         $url = $this->pathPrefix . '/json/' . $path;
-        return json_decode($this->call($url, $params, $options));
+        return json_decode($this->callUrl($url, $params, $options));
     }
 
     public function callUrl($url, $params=array(), $options=array()) {
