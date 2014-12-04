@@ -2,10 +2,24 @@
 
 include('ZohoCrmModule.php');
 
+// Enum
+abstract class ZohoCrmUserType {
+    const All      = 'AllUsers';
+    const Active   = 'ActiveUsers';
+    const Inactive = 'DeactiveUsers';
+    const Admin    = 'AdminUsers';
+    const ActiveConfirmedAdmin = 'ActiveConfirmedAdmins';
+}
+
 class ZohoCrm extends Zoho {
 
     protected $modules = array(
-        'Products' => null
+        'Accounts' => null,
+        'Contacts' => null,
+        'Leads'    => null,
+        'Notes'    => null,
+        'Products' => null,
+        'Users'    => null
     );
 
     public function __construct($authToken) {
@@ -20,6 +34,10 @@ class ZohoCrm extends Zoho {
             return $this->modules[$name];
         }
         throw new Exception('Unknown module: ' . $name);
+    }
+
+    public function __get($name) {
+        return $this->module($name);
     }
 }
 

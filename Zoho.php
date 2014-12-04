@@ -74,6 +74,14 @@ abstract class Zoho {
         return false;
     }
 
+    
+
+    public function callXml($path, $params=array(), $options=array()) {
+        $params = $this->fixedParams+array('scope' => $this->scope, 'authtoken' => $this->authToken)+$params;
+        $url = $this->pathPrefix . '/xml/' . $path;
+        return $this->callUrl($url, $params, $options);
+    }
+
     public function call($path, $params=array(), $options=array()) {
 
         $params = $this->fixedParams+array('scope' => $this->scope, 'authtoken' => $this->authToken)+$params;

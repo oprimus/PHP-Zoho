@@ -6,6 +6,7 @@ class ZohoCrmModuleIterator implements Iterator {
     protected $data=array();
     protected $position;
     protected $range=null;
+    protected $apiMethod=NULL; 
 
     protected $batchSize = 200;
 
@@ -15,6 +16,13 @@ class ZohoCrmModuleIterator implements Iterator {
 
         if (array_key_exists('BatchSize', $this->options)) {
             $this->batchSize = $this->options['BatchSize'];
+        }
+
+        if (array_key_exists('_apiMethod', $this->options)) {
+            $this->apiMethod = $this->options['_apiMethod'];
+            unset($this->options['_apiMethod']);
+        } else {
+            $this->apiMethod = 'getRecords';
         }
     }
 
@@ -29,7 +37,22 @@ class ZohoCrmModuleIterator implements Iterator {
         $this->range['fromIndex'] = (floor(($position-1)/$this->batchSize)*$this->batchSize)+1;
         $this->range['toIndex'] = $this->range['fromIndex']+$this->batchSize-1;
         $options = $this->range+$this->options;
-        foreach ($this->zohoCrmModule->call("getRecords", $options)->response->result->{$this->zohoCrmModule->name}->row as $record) {
+
+        $reply = $this->zohoCrmModule->call($this->apiMethod, $options);
+
+        if (isset($reply->response->nodata)) {
+            // No matches...
+            $records = array();
+        } else {
+            $data  = $reply->response->result->{$this->zohoCrmModule->name};
+            // Single results return as an object, not a one-element array, fix it.
+            if (!is_array($data->row)) 
+                $records = array($data->row);
+            else
+                $records = $data->row;
+        }
+
+        foreach ($records as $record) {
             $result = array();
             foreach ($record->FL as $field) {
                 $result[$field->val] = $field->content;
