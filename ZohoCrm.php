@@ -5,7 +5,12 @@ include('ZohoCrmModule.php');
 class ZohoCrm extends Zoho {
 
     protected $modules = array(
-        'Products' => null
+        'Leads' => null,
+        'Contacts' => null,
+        'Accounts' => null,
+        'Products' => null,
+        'Potentials' => null,
+        'Notes' => null
     );
 
     public function __construct($authToken) {

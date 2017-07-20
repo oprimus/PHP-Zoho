@@ -38,4 +38,13 @@ class ZohoCrmModule {
         }
         return new ZohoCrmModuleIterator($this, $options);
     }
+
+    /**
+     * @see https://www.zoho.com/crm/help/api/getrelatedrecords.html
+     */
+    public function getRelatedRecords($forRecordId, $relatedModule, $options=array()) {
+    	$options['id'] = $forRecordId;
+    	$options['parentModule'] = $this->name;
+        return new ZohoCrmModuleIterator($relatedModule, $options, 'getRelatedRecords');
+    }
 }

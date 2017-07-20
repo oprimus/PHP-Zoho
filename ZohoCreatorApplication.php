@@ -11,8 +11,8 @@ class ZohoCreatorApplication {
         $this->zohoCreator = $zohoCreator;
     }
 
-    public function call($path, $params=array(), $options=array()) {
-        return $this->zohoCreator->call("{$this->name}/$path", $params, $options);
+    public function call($path, $params=array(), $options=array(), $ownerInUrl=false) {
+        return $this->zohoCreator->call("{$this->name}/$path", $params, $options, $ownerInUrl);
     }
 
     /**
@@ -34,11 +34,11 @@ class ZohoCreatorApplication {
      * @param array $data An associative array of key => value pairs to set
      */
     public function add($formName, $data) {
-        $result = $this->call("{$formName}/add/", array(), array("PostData" => $data));
-        if ($result->formname[1]->operation[1]->values[1]->status[0] == 'Success') {
-            return $result->formname[1]->operation[1]->values[0];
+        $result = $this->call("form/{$formName}/record/add/", array(), array("PostData" => $data), true);
+        if ($result->formname[1]->operation[1]->status == 'Success') {
+            return $result->formname[1]->operation[1]->status;
         } else {
-            throw new Exception(sprintf("Zoho error: %s", $result->formname[1]->operation[1]->values[1]->status[0]));
+            throw new Exception(sprintf("Zoho error: %s", $result->formname[1]->operation[1]->status));
         }
     }
 

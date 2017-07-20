@@ -18,22 +18,19 @@ class ZohoReports extends Zoho {
     public $pathPrefix = 'https://reportsapi.zoho.com/api';
     protected $databases = array();
 
-    public function __construct($username, $password, $apiKey) {
-        $this->username = $username;
-        $this->password = $password;
-        $this->apiKey = $apiKey;
+    public function __construct($authToken) {
+        parent::__construct('reportsapi', 'https://reportsapi.zoho.com/api', $authToken);
     }
 
     public function call($owner, $database, $table, $action, $format, $params=array(), $options=array()) {
 
         $params = $this->fixedParams+array(
-            'ZOHO_API_KEY' => $this->apiKey,
             'ZOHO_ACTION' => $action,
             'ZOHO_OUTPUT_FORMAT' => $format,
-            'ticket' => $this->login($this->username, $this->password)
+            'authtoken' => $this->authToken
         )+$params;
 
-        $url = $this->pathPrefix . '/' . urlencode($owner !== null ? $owner : $this->username);
+        $url = $this->pathPrefix . '/' . urlencode($owner);
         if ($database != null) {
             $url .= '/' . urlencode($database);
             if ($table != null) {
